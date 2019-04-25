@@ -1,0 +1,105 @@
+﻿DOCKER
+1) docker -v — посмотреть установленную версию docker на Linux
+
+2) sudo systemctl status docker — чтобы после установки docker посмотреть запущен он или нет
+
+3) sudo usermod -aG docker $USER — чтобы каждый раз с командой docker не прописывать sudo можно дать права данному юзеру и перезагрузиться
+
+4) docker images — просмотр всех установленных образов на комп
+
+5) docker run name-image — запуск (если его нет то сначало скачивание с https://hub.docker.com/) образа name-image на компе
+
+6) docker pull name-image - просто скачать образ name-image и ничего не запускать
+
+7) docker ps — просмотр запущенных контейнеров (-а всех контейнеров)
+
+8) docker search tomcat — поиск на https://hub.docker.com/ через консоль
+
+9) docker run -it -p 1234:8080 tomcat — запуск контейнера из образа tomcat интерактивно (-it тогда в терминале будет отображаться запущенный контейнер и терминал будет недоступен), перенаправляем контейнер на новый порт 1234 (-p 1234:8080 по умолчание порт у apache 8080,это позволит запускать много контейнеров указывая каждому свой порт — 1235,1236 и т.д.) и указываем название образа (tomcat)
+
+10) docker run -d -p 1234:8080 tomcat — запуск контейнера из образа tomcat в бэкграунде.
+
+11) docker run -d -p 8888:80 nginx — тоже самое и для сервера nginx, только порт у него 80
+
+12) docker rm 123456789 — удаление контейнера (id номер 123456789 можно посмотреть через docker ps; всегда сначало останавливайте запущенный контейнер и затем его удаляйте)
+
+13) docker rmi tomcat — удалять образ можно только после удаления контейнера,который создан от данного образа
+
+14) nano Dockerfile — создадим Dockerfile, в котором пропишем все команды для установки например сервера Apache
+14.1) docker build -t vladimir:v1 . - создадим свой образ (build), назовем его vladimir, с тагом (v1, версия 1) и искать образ будем на локальном компе (.)
+
+15) docker tag vlad_ubuntu vlad_ubuntu-PROD — изменить имя tag (старое имя и новое)
+
+16) docker exec -it 5267e21d140 /bin/bash — зайти в запущенный контейнер под его ID 
+
+17) docker commit 5267e21d140 vovik_v2:latest — создание из контейнера с номером ID 5267e21d140 новый образ под именем vovik_v2:latest
+
+18) docker stop 5267e21d140 — остановка контейнера по ID
+
+Install Docker on Ubuntu 18.04 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+``` 
+sudo apt update 
+sudo apt install apt-transport-https 
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" 
+sudo apt update 
+sudo apt install docker-ce 
+sudo systemctl status docker 
+sudo usermod -aG docker $USER 
+>>>logout/login<<< 
+``` 
+
+docker run hello-world 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+docker ps 
+docker ps -a 
+docker images 
+
+
+docker search tomcat 
+docker pull tomcat 
+docker run -it -p 1234:8080 tomcat 
+docker run -it -p 8888:80 nginx 
+docker run -d -p 8888:80 nginx 
+
+
+
+docker build -t denis . 
+docker images 
+
+docker run -it -p 1234:80 denis:latest 
+docker run -d -p 1234:80 denis:latest 
+
+docker ps # list containers 
+docker ps -a # list all containers 
+
+docker tag denis_ubuntu denis_ubuntu-PROD 
+docker tag denis_ubuntu denis_ubuntu-PROD:v2 
+
+docker rm # delete container 
+docker rmi # delete image 
+
+UPDATE IMAGE 
+~~~~~~~~~~~~~ 
+docker run -d -p 7777:80 denis_ubuntu4 
+docker exec -it 5267e21d140 /bin/bash 
+echo "V2" >> /var/www/html/index.html 
+exit 
+docker commit 5267e21d140 denis_v2:latest 
+
+Export/Import Docker Image to file 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+docker save image:tag > arch_name.tar 
+docker load -i arch_name.tar 
+
+
+Import/Export Docker Image to AWS ECR 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+docker build -t denis:v1 . 
+aws ecr get-login --no-include-email --region=ca-central-1 
+docker tag denis:v1 12345678.dkr.ecr.ca-central-1.amazonaws.com/myrepo:latest 
+docker push 12345678.dkr.ecr.ca-central-1.amazonaws.com/myrepo:lastest 
+
+docker pull 12345678.dkr.ecr.ca-central-1.amazonaws.com/myrepo:latest
