@@ -1,5 +1,5 @@
 ﻿DOCKER
-1) docker -v — посмотреть установленную версию docker на Linux
+1) docker -v — посмотреть установленную версию docker на Linux(Ubuntu)
 
 2) sudo systemctl status docker — чтобы после установки docker посмотреть запущен он или нет
 
